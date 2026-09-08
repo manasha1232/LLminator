@@ -3,6 +3,8 @@
 LLMinator is a CLI-first security testing tool for ML and LLM targets. The
 current milestone supports a labelled PyTorch classification target and ART's
 FGSM attack, producing a canonical JSON report.
+<img width="1279" height="1280" alt="image" src="https://github.com/user-attachments/assets/ebe880b4-e507-45bc-9d2e-bf73564e2f04" />
+
 
 ## Development quick start
 
