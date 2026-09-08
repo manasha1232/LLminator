@@ -1,0 +1,15 @@
+.git/
+.agents/
+.codex/
+.venv*/
+.llminator/
+.pytest_cache/
+**/__pycache__/
+*.pyc
+reports/
+results.json
+qwen*.json
+*.log
+.env
+.env.*
+ui/

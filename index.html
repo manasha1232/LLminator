@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLMinator — ONNX Security Audit UI</title>
+  <meta name="description" content="Web interface for LLMinator: ONNX model security auditing, graph validation, and structural analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ── Background canvas ─────────────────────────────────────────────────── -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ── Top Nav ──────────────────────────────────────────────────────────── -->
+  <nav class="topnav">
+    <div class="nav-brand">
+      <span class="nav-icon">⬡</span>
+      <span class="nav-title">LLMinator</span>
+      <span class="nav-badge">ONNX</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-btn active" id="nav-scan" onclick="showView('scan')">Scan</button>
+      <button class="nav-btn" id="nav-history" onclick="showView('history')">History</button>
+    </div>
+    <div class="nav-status">
+      <span class="status-dot" id="server-dot"></span>
+      <span class="status-label" id="server-label">Connecting…</span>
+    </div>
+  </nav>
+
+  <!-- ── Main ─────────────────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- ═══════════ SCAN VIEW ═══════════ -->
+    <section id="view-scan">
+
+      <!-- Hero -->
+      <div class="hero">
+        <h1 class="hero-title">ONNX Security Audit</h1>
+        <p class="hero-sub">Drop your <code>.onnx</code> model for instant graph validation, fingerprinting &amp; structural analysis.</p>
+      </div>
+
+      <!-- Upload card -->
+      <div class="card upload-card" id="upload-card">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" accept=".onnx" hidden />
+          <div class="drop-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="drop-primary">Drop <code>.onnx</code> file here</p>
+          <p class="drop-secondary">or <button class="link-btn" onclick="document.getElementById('file-input').click()">browse files</button></p>
+          <div class="drop-or"><span>or</span></div>
+          <div class="path-row">
+            <input type="text" id="path-input" placeholder="/path/to/model.onnx" class="path-inp" />
+            <button class="btn-ghost" id="btn-use-path" onclick="usePath()">Use path</button>
+          </div>
+        </div>
+
+        <!-- Selected file pill -->
+        <div class="selected-file hidden" id="selected-file">
+          <span class="file-icon">⬡</span>
+          <span class="file-name" id="selected-name"></span>
+          <span class="file-size" id="selected-size"></span>
+          <button class="clear-btn" onclick="clearFile()">✕</button>
+        </div>
+
+        <!-- Options -->
+        <div class="scan-options">
+          <label class="toggle-label" for="deep-toggle">
+            <input type="checkbox" id="deep-toggle" />
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            Deep scan
+            <span class="option-hint">Adds garak prompt-injection &amp; jailbreak probes</span>
+          </label>
+        </div>
+
+        <button class="btn-primary" id="btn-scan" onclick="startScan()" disabled>
+          <span class="btn-icon">⬡</span> Run ONNX Audit
+        </button>
+      </div>
+
+      <!-- Terminal log -->
+      <div class="card terminal-card hidden" id="terminal-card">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">llminator scan --onnx …</span>
+          <span class="terminal-status" id="terminal-status">running</span>
+        </div>
+        <div class="terminal-body" id="terminal-body"></div>
+      </div>
+
+      <!-- Results panel -->
+      <div id="results-area"></div>
+
+    </section>
+
+    <!-- ═══════════ HISTORY VIEW ═══════════ -->
+    <section id="view-history" class="hidden">
+      <div class="hero">
+        <h1 class="hero-title">Scan History</h1>
+        <p class="hero-sub">All past ONNX audits stored in <code>reports/</code></p>
+      </div>
+      <div id="history-list" class="history-list">
+        <p class="empty-msg">Loading…</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Report Detail Modal ──────────────────────────────────────────────── -->
+  <div class="modal-backdrop hidden" id="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal hidden" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
